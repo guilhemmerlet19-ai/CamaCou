@@ -1,0 +1,8 @@
+/build/
+/install/
+/log/
+
+# Local editor and cache files
+/.vscode/
+__pycache__/
+*.py[cod]
