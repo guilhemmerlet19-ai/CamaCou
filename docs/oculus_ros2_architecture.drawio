@@ -1,0 +1,152 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="oculus-ros2-arch" name="Architecture ROS 2 Oculus">
+    <mxGraphModel dx="1400" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="1240" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Titre -->
+        <mxCell id="title" value="&lt;b&gt;Architecture ROS 2 du sonar Oculus&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="30" y="20" width="500" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Matériel -->
+        <mxCell id="hw" value="&lt;b&gt;Sonar Oculus&lt;/b&gt;&lt;br&gt;(matériel)" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;size=12;fillColor=#E0E0E0;strokeColor=#666666;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="470" y="70" width="280" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Bibliothèque driver -->
+        <mxCell id="lib" value="&lt;b&gt;oculus_driver&lt;/b&gt; &lt;i&gt;(bibliothèque C++ / Boost.Asio, pas un paquet ROS)&lt;/i&gt;&lt;br&gt;&lt;br&gt;AsyncService (thread io_service) → SonarDriver → SonarClient → StatusListener&lt;br&gt;callbacks : add_status_callback · add_ping_callback · add_dummy_callback" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="290" y="210" width="640" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Namespace /sonar (fond) -->
+        <mxCell id="ns" value="namespace &lt;b&gt;/sonar&lt;/b&gt;" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#999999;verticalAlign=top;align=left;spacingLeft=10;spacingTop=4;fontSize=13;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="30" y="350" width="1180" height="660" as="geometry" />
+        </mxCell>
+
+        <!-- Nœud oculus_sonar -->
+        <mxCell id="node_sonar" value="&lt;b style=&quot;font-size:15px&quot;&gt;/sonar/oculus_sonar&lt;/b&gt;&lt;br&gt;&lt;i&gt;exécutable oculus_sonar_node · cfg/default.yaml&lt;/i&gt;&lt;hr&gt;&lt;div style=&quot;text-align:left&quot;&gt;&lt;b&gt;Paramètres dynamiques&lt;/b&gt; (on_set_parameters_callback → sendParamToSonar) :&lt;br&gt;frequency_mode, ping_rate, nbeams, range, gain_percent, gain_assist, gamma_correction,&lt;br&gt;sound_speed, use_salinity, salinity, switch_scientific_data_mode, set_gain_boost, set_transmit_boost&lt;br&gt;&lt;b&gt;Autres :&lt;/b&gt; run, frame_id, temperature_warn, temperature_stop&lt;br&gt;&lt;b&gt;Sécurité :&lt;/b&gt; checkOverheating() → standby() si T &amp;gt; temperature_stop&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=12;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="260" y="390" width="700" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Topics du nœud sonar -->
+        <mxCell id="t_status" value="&lt;b&gt;/sonar/status&lt;/b&gt;&lt;br&gt;&lt;i&gt;oculus_interfaces/OculusStatus&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="630" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_ping" value="&lt;b&gt;/sonar/ping&lt;/b&gt;&lt;br&gt;&lt;i&gt;oculus_interfaces/Ping&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="290" y="630" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_oping" value="&lt;b&gt;/sonar/oculus_ping&lt;/b&gt;&lt;br&gt;&lt;i&gt;oculus_interfaces/OculusPing2&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="520" y="630" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_temp" value="&lt;b&gt;/sonar/temperature&lt;/b&gt;&lt;br&gt;&lt;i&gt;sensor_msgs/Temperature&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="750" y="630" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_press" value="&lt;b&gt;/sonar/pressure&lt;/b&gt;&lt;br&gt;&lt;i&gt;sensor_msgs/FluidPressure&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="980" y="630" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Nœud scientific_viewer -->
+        <mxCell id="node_viewer" value="&lt;b style=&quot;font-size:15px&quot;&gt;/sonar/scientific_viewer&lt;/b&gt;&lt;br&gt;&lt;i&gt;exécutable scientific_viewer_node · cfg/scientific_viewer.yaml&lt;/i&gt;&lt;hr&gt;&lt;div style=&quot;text-align:left&quot;&gt;&lt;b&gt;Paramètres :&lt;/b&gt; frame_id, remove_agc, apply_tvg, gain&lt;br&gt;&lt;b&gt;SonarViewer::publishFan()&lt;/b&gt; : image en éventail (OpenCV)&lt;/div&gt;" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=12;spacing=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="760" width="500" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Topics du viewer -->
+        <mxCell id="t_rtheta" value="&lt;b&gt;/sonar/rtheta_image&lt;/b&gt;&lt;br&gt;&lt;i&gt;sensor_msgs/Image&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="930" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_crtheta" value="&lt;b&gt;/sonar/compressed_rtheta_image&lt;/b&gt;&lt;br&gt;&lt;i&gt;sensor_msgs/CompressedImage&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="930" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cart" value="&lt;b&gt;/sonar/image_cartesian&lt;/b&gt;&lt;br&gt;&lt;i&gt;sensor_msgs/Image&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="440" y="930" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="t_cart8" value="&lt;b&gt;/sonar/image_cartesian_8_bit&lt;/b&gt;&lt;br&gt;&lt;i&gt;sensor_msgs/Image&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="620" y="930" width="190" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Notes lancement -->
+        <mxCell id="launch" value="&lt;b&gt;Lancement&lt;/b&gt;&lt;br&gt;• &lt;b&gt;default.launch.py&lt;/b&gt; : déclare les 2 nœuds mais n'ajoute que &lt;i&gt;oculus_sonar&lt;/i&gt;&lt;br&gt;• &lt;b&gt;scientific_viewer.launch.py&lt;/b&gt; : lance uniquement &lt;i&gt;scientific_viewer&lt;/i&gt;" style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;fillColor=#F5F5F5;strokeColor=#999999;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="840" y="760" width="350" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Légende -->
+        <mxCell id="leg_title" value="&lt;b&gt;Légende&lt;/b&gt;" style="text;html=1;align=left;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="840" y="870" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_node" value="Nœud ROS 2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="840" y="895" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_topic" value="Topic" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="960" y="895" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_lib" value="Bibliothèque" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="895" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_txt" value="→ publication / abonnement   ⇢ appel de fonction / réseau" style="text;html=1;align=left;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="840" y="935" width="350" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Scripts hors graphe -->
+        <mxCell id="scripts" value="&lt;b&gt;Scripts Python hors graphe par défaut&lt;/b&gt; (non installés, lignes commentées dans le CMakeLists)&lt;br&gt;• &lt;b&gt;oculus_subscriber_to_image.py&lt;/b&gt; : sonar/ping → oculus_sonar/image (sensor_msgs/Image)&lt;br&gt;• &lt;b&gt;oculus_to_rosbag.py&lt;/b&gt; : fichier .oculus → rosbag (topic /sonar/oculus, type Ping)&lt;br&gt;• &lt;b&gt;display_oculus_file.py&lt;/b&gt; : affichage d'un fichier .oculus" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;align=left;spacingLeft=10;fillColor=#F5F5F5;strokeColor=#999999;fontSize=11;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="30" y="1040" width="700" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Paquets -->
+        <mxCell id="pkgs" value="&lt;b&gt;Paquets&lt;/b&gt;&lt;br&gt;• oculus_driver : lib C++ réseau&lt;br&gt;• oculus_interfaces : messages&lt;br&gt;• oculus_ros2 : nœuds, launch, cfg, scripts&lt;br&gt;• oculus_sonar : métapaquet" style="shape=note;whiteSpace=wrap;html=1;size=14;align=left;spacingLeft=8;fillColor=#F5F5F5;strokeColor=#999999;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="760" y="1040" width="450" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Arêtes matériel <-> driver -->
+        <mxCell id="e_hw_down" value="Status, Ping, Dummy&lt;br&gt;(TCP/UDP Ethernet)" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;fontSize=10;exitX=0.35;exitY=1;entryX=0.4;entryY=0;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hw" target="lib">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_hw_up" value="Config (PingConfig / FireConfig)" style="endArrow=classic;html=1;dashed=1;strokeColor=#666666;fontSize=10;exitX=0.6;exitY=0;entryX=0.65;entryY=1;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="lib" target="hw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Driver <-> nœud -->
+        <mxCell id="e_lib_node" value="callbacks (même processus)" style="endArrow=classic;startArrow=classic;html=1;dashed=1;strokeColor=#6C8EBF;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="lib" target="node_sonar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Nœud sonar -> topics -->
+        <mxCell id="e_s1" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;exitX=0.1;exitY=1;" edge="1" parent="1" source="node_sonar" target="t_status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s2" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;exitX=0.2;exitY=1;" edge="1" parent="1" source="node_sonar" target="t_ping">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s3" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;" edge="1" parent="1" source="node_sonar" target="t_oping">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s4" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;exitX=0.8;exitY=1;" edge="1" parent="1" source="node_sonar" target="t_temp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s5" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;exitX=0.9;exitY=1;" edge="1" parent="1" source="node_sonar" target="t_press">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ping -> viewer -->
+        <mxCell id="e_ping_viewer" value="abonnement" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#D6B656;strokeWidth=2;fontSize=10;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="t_ping" target="node_viewer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- viewer -> topics -->
+        <mxCell id="e_v1" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;exitX=0.1;exitY=1;" edge="1" parent="1" source="node_viewer" target="t_rtheta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_v2" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;exitX=0.4;exitY=1;" edge="1" parent="1" source="node_viewer" target="t_crtheta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_v3" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;exitX=0.7;exitY=1;" edge="1" parent="1" source="node_viewer" target="t_cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_v4" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#82B366;exitX=0.95;exitY=1;" edge="1" parent="1" source="node_viewer" target="t_cart8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
